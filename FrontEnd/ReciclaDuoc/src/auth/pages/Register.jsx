@@ -1,16 +1,18 @@
+import ReciclajeIcon from '@icons/ReciclajeIcon'
+import { Link } from 'react-router';
 
 export default function RegisterScreen() {
     const darkTeal = "#0a615c";
     const accent = "#00bfb3";
 
     return (
-        <div className="w-full min-h-screen grid place-items-center bg-neutral-100 p-4">
+        <div className="w-full min-h-screen grid place-items-center bg-neutral-100">
             {/* Phone frame */}
             <div className="w-[380px] max-w-full bg-white rounded-[28px] shadow-2xl border border-neutral-200 overflow-hidden">
                 <div className="px-6 pt-10 pb-10">
                     {/* Logo */}
                     <div className="flex justify-center">
-                        <RecycleLogo accent={accent} dark={darkTeal} />
+                        <ReciclajeIcon />
                     </div>
 
                     {/* Title */}
@@ -32,7 +34,10 @@ export default function RegisterScreen() {
                             Registrarse
                         </button>
 
-                        <p className="mt-4 text-center text-lg text-neutral-800">o Iniciar Sesion</p>
+                        <Link to={'/login'}>
+                            <p className="mt-4 text-center text-lg text-neutral-800">o Iniciar Sesion</p>
+                        </Link>
+
                     </form>
                 </div>
             </div>
@@ -56,16 +61,3 @@ function InputField({ placeholder, type = "text", className = "", accent = "#00b
     );
 }
 
-function RecycleLogo({ accent = "#00bfb3", dark = "#0a615c" }) {
-    return (
-        <svg viewBox="0 0 64 64" className="w-20 h-20" aria-hidden>
-            {/* Simple abstract recycle-like mark with two tones */}
-            <path d="M28 7l5 9-5 3-5-9z" fill={accent} />
-            <path d="M49 17l-9 5-3-5 9-5z" fill={dark} />
-            <path d="M53 40l-10-3 2-5 10 3z" fill={accent} />
-            <path d="M30 56l-5-9 5-3 5 9z" fill={dark} />
-            <path d="M11 47l9-5 3 5-9 5z" fill={accent} />
-            <path d="M9 24l10 3-2 5-10-3z" fill={dark} />
-        </svg>
-    );
-}

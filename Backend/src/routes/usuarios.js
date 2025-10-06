@@ -5,6 +5,7 @@ import { getPerfil, updatePerfil } from "../controllers/perfilController.js";
 import { verificarToken } from "../middlewares/authMiddleware.js";
 
 
+
 const router = Router();
 
 // POST /usuarios/registro
