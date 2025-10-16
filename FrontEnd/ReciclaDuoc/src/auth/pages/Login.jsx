@@ -17,49 +17,7 @@ export default function LoginScreen() {
 
 
     const [showPwd, setShowPwd] = useState(false);
-    // const { register, handleSubmit, formState: { errors, isValid, isSubmitting } } =
-    //     useForm({
-    //         resolver: zodResolver(schema),
-    //         mode: "onChange"
-    //     });
 
-    /*
-        
-        const onSubmit = async (data) => {
-            setApiError("");
-            console.log(data);
-            try {
-                // ⚙️ Configura tu endpoint
-                const resp = await axios.post(
-                    `${import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"}/api/usuario/loginUsuario`,
-                    {
-                        email: data.email,
-                        password: data.password
-                    }
-                );
-    
-                const token = resp.data?.token ?? resp.data?.jwt;
-    
-                if (token) {
-                    localStorage.setItem("access_token", token);
-                }
-    
-                // Redirige al dashboard o ruta protegida
-                window.location.replace("/");
-            } catch (err) {
-                // Manejo de errores legible
-                const status = err?.response?.status;
-                if (status === 400 || status === 401) {
-                    setApiError("Correo o contraseña incorrectos.");
-                } else if (status === 429) {
-                    setApiError("Demasiados intentos. Intenta nuevamente en unos minutos.");
-                } else {
-                    setApiError("No pudimos iniciar sesión. Revisa tu conexión o inténtalo más tarde.");
-                }
-            }
-        };
-    
-    */
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -152,19 +110,12 @@ export default function LoginScreen() {
     );
 }
 
-function InputField({ placeholder, type = "text", className = "", accent = "#00bfb3" }) {
-    return (
-        <div className={className}>
-            <input
-                type={type}
-                placeholder={placeholder}
-                className="w-full rounded-2xl border px-5 py-4 text-lg outline-none bg-white"
-                style={{ borderColor: accent }}
-                onFocus={(e) => (e.currentTarget.style.boxShadow = `0 0 0 3px ${accent}22`)}
-                onBlur={(e) => (e.currentTarget.style.boxShadow = "none")}
-                aria-label={placeholder}
-            />
-        </div>
-    );
-}
+
+
+// Validación con Zod
+const loginSchema = z.object({
+    email: z.string().min(1, "El correo es obligatorio").email("Correo inválido"),
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+});
+
 

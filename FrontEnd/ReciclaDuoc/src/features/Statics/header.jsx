@@ -63,8 +63,6 @@ export default function Header({
                     </Link>
                 </div>
             </div>
-
-            <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: darkTeal }}>ReciclaDUOC</h1>
         </header>
     );
 }

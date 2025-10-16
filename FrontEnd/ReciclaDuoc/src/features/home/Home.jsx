@@ -1,15 +1,21 @@
+import { Link } from "react-router";
+
 export default function HomePage({ primary, darkTeal, lightTeal }) {
 
     return (
-        <div className="px-6 pb-6">
+        <div className="pb-6 px-4 ">
+
+            <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: darkTeal }}>ReciclaDUOC</h1>
 
             {/* Primary button */}
-            <button
-                className="mt-6 w-full rounded-2xl py-4 text-white text-2xl font-bold shadow-md active:scale-[.99] transition"
-                style={{ backgroundColor: primary }}
-            >
-                Reciclar
-            </button>
+            <Link to={'/recycle'}>
+                <button
+                    className="mt-6 w-full rounded-2xl py-4 text-white text-2xl font-bold shadow-md active:scale-[.99] transition"
+                    style={{ backgroundColor: primary }}
+                >
+                    Reciclar
+                </button>
+            </Link>
 
             {/* Points */}
             <div className="mt-6 text-center">
@@ -24,12 +30,14 @@ export default function HomePage({ primary, darkTeal, lightTeal }) {
                 Ganar Puntos
             </button>
 
-            <button
-                className="mt-4 w-full rounded-2xl py-4 text-xl font-extrabold text-white"
-                style={{ backgroundColor: darkTeal }}
-            >
-                Canjear Premios
-            </button>
+            <Link to={'/rewards'}>
+                <button
+                    className="mt-4 w-full rounded-2xl py-4 text-xl font-extrabold text-white"
+                    style={{ backgroundColor: darkTeal }}
+                >
+                    Canjear Premios
+                </button>
+            </Link>
 
             {/* Ranking card */}
             <div className="mt-6">
@@ -41,7 +49,7 @@ export default function HomePage({ primary, darkTeal, lightTeal }) {
                     <RankRow place={3} name="Camila" points={800} />
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

@@ -1,5 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
+import { useAuth } from "@/auth/api/AuthContext";
+import { useNavigate } from "react-router";
 
 export default function ProfileScreen({
     userFake = {
@@ -12,14 +14,18 @@ export default function ProfileScreen({
         { id: 1, date: "2025-10-05", action: "Plástico PET", amountKg: 1.2, points: 120 },
         { id: 2, date: "2025-10-03", action: "Papel/Cartón", amountKg: 2.0, points: 160 },
         { id: 3, date: "2025-09-28", action: "Vidrio", amountKg: 0.8, points: 80 },
-    ],
-    onChangePassword = () => alert("Cambiar contraseña"),
-    onLogout = () => alert("Cerrar sesión"),
+    ]
+
 }) {
     const [user, setUser] = useState()
-    const [loading, setLoading] = useState(true);
+    const [reciclajes, setReciclajes] = useState()
+    const [loadingState, setLoadingState] = useState(true);
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [err, setErr] = useState(null);
+    const [error, setError] = useState("");
+    const { logout, loading } = useAuth();
+    const navigate = useNavigate();
+
 
     const api = useMemo(
         () =>
@@ -29,6 +35,11 @@ export default function ProfileScreen({
         []
     );
 
+    const onChangePassword = () => {
+        console.log(reciclajes.length)
+    }
+
+
     const getProfile = async () => {
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
         const { data } = await api.get("/api/usuario/getPerfil", { headers });
@@ -37,23 +48,40 @@ export default function ProfileScreen({
 
     useEffect(() => {
         if (!token) {
-            setLoading(false); // no hay token -> nada que pedir
+            setLoadingState(false); // no hay token -> nada que pedir
             return;
         }
         (async () => {
             try {
                 const data = await getProfile();
                 setUser(data.perfil);
+                setReciclajes(data.reciclajes);
             } catch (e) {
                 console.error("Error al obtener el perfil:", e);
                 setErr(e);
             } finally {
-                setLoading(false);
+                setLoadingState(false);
             }
         })();
     }, [token]);
 
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        setError("");
+        try {
+            await logout();
+            // navigate("/login");
+            // tras logout exitoso
+            const from = location.state?.from?.pathname || "/login";
+            navigate(from, { replace: true });
+
+        } catch {
+            setError("Logout failed. Please try again.");
+        }
+    };
+
     const shownUser = user ?? userFake;
+    const shownReciclajes = reciclajes ?? [];
 
     const darkTeal = "#0a615c";
     const primary = "#00bfb3";
@@ -84,14 +112,14 @@ export default function ProfileScreen({
                 <Card>
                     <div className="text-sm text-neutral-600">Reciclajes</div>
                     <div className="text-2xl font-extrabold" style={{ color: darkTeal }}>
-                        {history.length}
+                        {shownReciclajes.length}
                     </div>
                 </Card>
 
                 <Card>
                     <div className="text-sm text-neutral-600">Kg Totales</div>
                     <div className="text-2xl font-extrabold" style={{ color: darkTeal }}>
-                        {history.reduce((a, h) => a + (h.amountKg || 0), 0).toFixed(1)} kg
+                        {shownReciclajes.reduce((a, h) => a + (h.amountKg || 0), 0).toFixed(1)} kg
                     </div>
                 </Card>
             </section>
@@ -123,7 +151,7 @@ export default function ProfileScreen({
                     Cambiar contraseña
                 </button>
                 <button
-                    onClick={onLogout}
+                    onClick={handleLogout}
                     className="w-full rounded-2xl py-3 font-bold text-white shadow-md active:scale-[.99] transition"
                     style={{ backgroundColor: darkTeal }}
                 >

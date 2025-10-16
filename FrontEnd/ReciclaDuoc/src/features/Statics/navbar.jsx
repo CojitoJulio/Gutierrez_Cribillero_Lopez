@@ -26,8 +26,8 @@ export default function Navbar({ darkTeal }) {
                         </NavIcon>
                     </Link>
 
-                    <Link>
-                        <NavIcon label="Agregar" >
+                    <Link to={'/recycle'}>
+                        <NavIcon label="Agregar" active={location.pathname === '/recycle'}>
                             <img src={addIcon} alt="" />
                         </NavIcon>
                     </Link>

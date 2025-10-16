@@ -9,7 +9,9 @@ export default function RewardsScreen() {
     const iconBg = "#d6f4f0";
 
     return (
-        <div className="pb-6">
+        <div className="pb-6 px-4">
+
+            <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: darkTeal }}>Recompensas</h1>
 
             <p className="mt-2 text-lg font-bold" style={{ color: darkTeal }}>
                 <strong className="text-2xl">750</strong> Puntos disponibles

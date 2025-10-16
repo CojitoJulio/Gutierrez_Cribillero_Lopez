@@ -7,6 +7,9 @@ import RewardsScreen from "@/features/rewards/rewards";
 import { AuthProvider } from "@/auth/api/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import ProfileScreen from "@/features/profile/profileScreen";
+import RedirectIfAuthenticated from "./RedirectIfAuthenticated";
+import RecycleScreen from "@/features/recycle/recycleScreen";
+import ResultsList from "@/features/recycle/listScreen";
 
 
 export default function AppRouter() {
@@ -16,14 +19,20 @@ export default function AppRouter() {
     return (
         <AuthProvider>
             <Routes>
-                <Route path="/login" element={<LoginScreen />} />
-                <Route path="/register" element={<RegisterScreen />} />
+                <Route path="/pruebacamara" element={<RecycleScreen />} />
+
+                <Route element={<RedirectIfAuthenticated to="/" />}>
+                    <Route path="/login" element={<LoginScreen />} />
+                    <Route path="/register" element={<RegisterScreen />} />
+                </Route>
 
                 <Route element={<ProtectedRoute />}>
                     <Route path="/" element={<MainMenu />}>
                         <Route index element={<HomePage primary={primary} darkTeal={darkTeal} lightTeal={lightTeal} />} />
                         <Route path="rewards" element={<RewardsScreen />} />
+                        <Route path="/recycle" element={<RecycleScreen />} />
                         <Route path="/profile" element={<ProfileScreen />} />
+                        <Route path="/list" element={<ResultsList />} />
                     </Route>
                 </Route>
 
