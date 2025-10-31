@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { registrarUsuario } from "../controllers/registroController.js";
 import { loginUsuario } from "../controllers/loginController.js";
-import { getPerfil, updatePerfil } from "../controllers/perfilController.js";
+import { getPerfil, updatePerfil, actualizarContrasena } from "../controllers/perfilController.js";
 import { verificarToken } from "../middlewares/authMiddleware.js";
-
+import { rankingUsuarios } from "../controllers/rankingController.js";
 
 
 const router = Router();
@@ -19,6 +19,11 @@ router.get("/getPerfil", verificarToken, getPerfil);
 
 // PUT /usuarios/updatePerfil
 router.put("/updatePerfil", verificarToken, updatePerfil);
+
+// PUT /usuarios/updatePassword
+router.put("/updatePassword", verificarToken, actualizarContrasena);
+
+router.get("/rankingUsuarios", rankingUsuarios);
 
 
 
