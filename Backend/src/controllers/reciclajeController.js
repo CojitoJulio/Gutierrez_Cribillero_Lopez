@@ -44,7 +44,7 @@ export const crearReciclaje = async (req, res) => {
         try {
           const buffer = Buffer.from(material.foto.replace(/^data:image\/\w+;base64,/, ''), 'base64');
           const extension = material.foto.match(/data:image\/(\w+);/)[1];
-          const nombreArchivo = `reciclaje_${id_reciclaje}_${material.id_material}.${extension}`;
+          const nombreArchivo = `reciclaje_${id_reciclaje}_${material.id_material}_${materiales.indexOf(material)}.${extension}`;
 
           const { data, error } = await supabase.storage
             .from('reciclaDUOC_fotos')

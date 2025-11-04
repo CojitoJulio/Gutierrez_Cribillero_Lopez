@@ -25,13 +25,12 @@ export const getPerfil = async (req, res) => {
     // Reciclajes realizados por el usuario
     const reciclajesResult = await turso.execute({
       sql: `
-        SELECT r.id_reciclaje, r.fecha, r.foto, rp.cantidad,
-               p.id_producto, p.nombre AS producto, p.descripcion, p.valor_punto
-        FROM reciclaje r
-        JOIN reciclaje_producto rp ON r.id_reciclaje = rp.id_reciclaje
-        JOIN producto p ON rp.id_producto = p.id_producto
+        select r.id_reciclaje, rm.foto, rm.cantidad, r.fecha, m.nombre, m.valor_punto
+        from reciclaje r
+        join reciclaje_material rm on r.id_reciclaje = rm.id_reciclaje
+        join material m on rm.id_material = m.id_material
         WHERE r.id_usuario = ?
-        ORDER BY r.fecha DESC
+        order by r.fecha DESC
       `,
       args: [id],
     });
@@ -43,14 +42,13 @@ export const getPerfil = async (req, res) => {
         reciclajesMap[row.id_reciclaje] = {
           id_reciclaje: row.id_reciclaje,
           fecha: row.fecha,
-          foto: row.foto,
           productos: [],
         };
       }
       reciclajesMap[row.id_reciclaje].productos.push({
         id_producto: row.id_producto,
-        nombre: row.producto,
-        descripcion: row.descripcion,
+        nombre: row.nombre,
+        foto: row.foto,
         valor_punto: row.valor_punto,
         cantidad: row.cantidad,
       });
