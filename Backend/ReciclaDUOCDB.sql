@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS comuna;
 DROP TABLE IF EXISTS region;
 DROP TABLE IF EXISTS material;
 DROP TABLE IF EXISTS rol;
+DROP TABLE IF EXISTS canje_premio;
+DROP TABLE IF EXISTS estado_canje;
 DROP TABLE IF EXISTS usuario;
 DROP TABLE IF EXISTS premio;
 
@@ -17,14 +19,23 @@ DROP TABLE IF EXISTS premio;
 -- ==============================================
 -- CREACIÓN DE TABLAS
 -- ==============================================
+CREATE TABLE estado_canje (
+    id_estado INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE rol (
+    id_rol INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre VARCHAR(20) NOT NULL
+);
+
 CREATE TABLE premio (
     id_premio INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre VARCHAR(50) NOT NULL,
     foto VARCHAR(200),
-    puntos_requeridos INTEGER NOT NULL
+    puntos_requeridos INTEGER NOT NULL,
     stock INTEGER NOT NULL
 );
-
 
 CREATE TABLE usuario (
     id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,17 +48,14 @@ CREATE TABLE usuario (
 );
 
 CREATE TABLE canje_premio (
-    id_canje INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_canje TEXT PRIMARY KEY,
     id_usuario INTEGER NOT NULL,
     id_premio INTEGER NOT NULL,
+    id_estado INTEGER NOT NULL,
     fecha DATETIME NOT NULL,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
-    FOREIGN KEY (id_premio) REFERENCES premio(id_premio)
-);
-
-CREATE TABLE rol (
-    id_rol INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre VARCHAR(20) NOT NULL
+    FOREIGN KEY (id_premio) REFERENCES premio(id_premio),
+    FOREIGN KEY (id_estado) REFERENCES estado_canje(id_estado)
 );
 
 CREATE TABLE material (
@@ -137,12 +145,13 @@ INSERT INTO deposito (ubicacion, id_centro) VALUES
 ('Estación Central', 1),
 ('Playa Acapulco', 2);
 
--- Reciclajes
-INSERT INTO reciclaje (id_usuario, id_deposito, fecha, foto) VALUES
-(1, 1, '2025-09-17 10:00:00', 'foto1.jpg'),
-(2, 2, '2025-09-17 11:30:00', 'foto2.jpg');
+-- Estado Canje
+INSERT INTO estado_canje (nombre) VALUES
+('Canjeado'),
+('Entregado'),
+('Cancelado');
 
--- Reciclaje_Material
-INSERT INTO reciclaje_material (id_reciclaje, id_material, cantidad, foto) VALUES
-(1, 1, 5, 'foto1_material.jpg'),
-(2, 2, 3, 'foto2_material.jpg');
+-- Premios
+INSERT INTO premio (nombre, foto, puntos_requeridos, stock) VALUES
+('Botella Reutilizable', 'botella.jpg', 100, 50),
+('Bolsa Ecológica', 'bolsa.jpg', 50, 100);
