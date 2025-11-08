@@ -85,3 +85,79 @@ export const canjearPremio = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor al procesar el canje.' });
   }
 };
+
+// Validar el canje de un premio por su UUID
+export const validarCanje = async (req, res) => {
+  const { uuid } = req.body;
+
+  if (!uuid) {
+    return res.status(400).json({ error: 'El código UUID es requerido.' });
+  }
+
+  let tx;
+  try {
+    tx = await turso.transaction("write");
+
+    const canjeRes = await tx.execute({
+      sql: `
+        SELECT cp.id_estado, ec.nombre as estado_nombre
+        FROM canje_premio cp
+        JOIN estado_canje ec ON cp.id_estado = ec.id_estado
+        WHERE cp.id_canje = ?
+      `,
+      args: [uuid],
+    });
+
+    if (canjeRes.rows.length === 0) {
+      await tx.rollback();
+      return res.status(404).json({ mensaje: 'El código no es válido.' });
+    }
+
+    const { id_estado: idEstadoActual, estado_nombre: estadoNombreActual } = canjeRes.rows[0];
+    let estadoNombreNuevo = estadoNombreActual;
+
+    if (estadoNombreActual === 'Canjeado') {
+      const estadoEntregadoRes = await tx.execute({
+        sql: "SELECT id_estado FROM estado_canje WHERE nombre = 'Entregado'",
+        args: [],
+      });
+
+      if (estadoEntregadoRes.rows.length === 0) {
+        await tx.rollback();
+        return res.status(500).json({ error: 'Estado "Entregado" no encontrado en la base de datos.' });
+      }
+
+      const idEstadoEntregado = estadoEntregadoRes.rows[0].id_estado;
+
+      await tx.execute({
+        sql: "UPDATE canje_premio SET id_estado = ? WHERE id_canje = ?",
+        args: [idEstadoEntregado, uuid],
+      });
+      estadoNombreNuevo = 'Entregado';
+      await tx.commit();
+      return res.status(200).json({
+        mensaje: 'El premio ha sido marcado como entregado.',
+        estado_anterior: estadoNombreActual,
+        estado_actual: estadoNombreNuevo,
+      });
+    } else if (estadoNombreActual === 'Entregado') {
+      await tx.rollback();
+      return res.status(200).json({
+        mensaje: 'El premio ya fue entregado.',
+        estado_actual: estadoNombreNuevo,
+      });
+    } else {
+      // Para otros estados como 'Cancelado'
+      await tx.rollback();
+      return res.status(400).json({
+        mensaje: `El canje se encuentra en estado: ${estadoNombreActual}.`,
+        estado_actual: estadoNombreNuevo,
+      });
+    }
+
+  } catch (error) {
+    if (tx) await tx.rollback();
+    console.error('Error al validar y actualizar el canje:', error);
+    res.status(500).json({ error: 'Error interno del servidor al validar el canje.' });
+  }
+};
