@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { canjearPremio, validarCanje } from "../controllers/canjePremioController.js";
+import { canjearPremio, validarCanje, getpremios, verificarCanje } from "../controllers/canjePremioController.js";
 import { verificarToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
@@ -9,5 +9,11 @@ router.post("/canjePremio", verificarToken, canjearPremio);
 
 // POST /api/canje/validar-canje
 router.post("/validarCanje", verificarToken, validarCanje);
+
+// GET /api/canje/premios
+router.get("/premios", verificarToken, getpremios)
+
+// POST /api/canje/verificarCanje
+router.post("/verificarCanje", verificarToken, verificarCanje);
 
 export default router;

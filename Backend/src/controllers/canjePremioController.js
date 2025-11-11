@@ -41,12 +41,12 @@ export const canjearPremio = async (req, res) => {
     // 2. Verificar si hay stock y si el usuario tiene puntos suficientes
     if (stockPremio <= 0) {
       await tx.rollback();
-      return res.status(400).json({ error: 'No hay stock disponible para este premio.' });
+      return res.status(200).json({ error: 'No hay stock disponible para este premio.' });
     }
 
     if (puntosUsuario < puntosRequeridos) {
       await tx.rollback();
-      return res.status(400).json({ error: 'Puntos insuficientes para canjear el premio.' });
+      return res.status(200).json({ error: 'Puntos insuficientes para canjear el premio.' });
     }
 
     // 3. Generar UUID y actualizar tablas
@@ -159,5 +159,41 @@ export const validarCanje = async (req, res) => {
     if (tx) await tx.rollback();
     console.error('Error al validar y actualizar el canje:', error);
     res.status(500).json({ error: 'Error interno del servidor al validar el canje.' });
+  }
+};
+
+export const getpremios = async (req, res) => {
+  try {
+    const premiosRes = await turso.execute({
+      sql: "SELECT id_premio, nombre, foto, puntos_requeridos, stock FROM premio",
+      args: [],
+    });
+
+    res.status(200).json({ premios: premiosRes.rows });
+  } catch (error) {
+    console.error('Error al obtener la lista de premios:', error);
+    res.status(500).json({ error: 'Error interno del servidor al obtener la lista de premios.' });
+  }
+};
+
+export const verificarCanje = async (req, res) => {
+  const { id_premio } = req.body;
+  const { id: id_usuario } = req.usuario;
+
+  try {
+    const canjeRes = await turso.execute({
+      sql: `
+        select id_canje from canje_premio where id_usuario = ? and id_premio = ? and id_estado = 1`,
+      args: [id_usuario, id_premio],
+    });
+
+    if (canjeRes.rows.length === 0) {
+      return res.status(200).json({});
+    }
+
+    res.status(200).json(canjeRes.rows[0]);
+  } catch (error) {
+    console.error('Error al obtener la lista de premios:', error);
+    res.status(500).json({ error: 'Error interno del servidor al obtener la lista de premios.' });
   }
 };
