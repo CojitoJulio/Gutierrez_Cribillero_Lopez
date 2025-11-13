@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS material;
 DROP TABLE IF EXISTS rol;
 DROP TABLE IF EXISTS canje_premio;
 DROP TABLE IF EXISTS estado_canje;
+DROP TABLE IF EXISTS refresh_token;
 DROP TABLE IF EXISTS usuario;
 DROP TABLE IF EXISTS premio;
 
@@ -45,6 +46,15 @@ CREATE TABLE usuario (
     puntos INTEGER NOT NULL,
     id_rol INTEGER NOT NULL,
     FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+CREATE TABLE refresh_token (
+    id_refresh_token INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_usuario INTEGER NOT NULL,
+    token TEXT NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
 );
 
 CREATE TABLE canje_premio (

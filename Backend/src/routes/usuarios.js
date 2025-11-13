@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { registrarUsuario } from "../controllers/registroController.js";
 import { loginUsuario } from "../controllers/loginController.js";
+import { refreshToken } from "../controllers/refreshTokenController.js";
 import { getPerfil, updatePerfil, actualizarContrasena } from "../controllers/perfilController.js";
 import { verificarToken } from "../middlewares/authMiddleware.js";
 import { rankingUsuarios } from "../controllers/rankingController.js";
@@ -13,6 +14,9 @@ router.post("/registroUsuario", registrarUsuario);
 
 // POST /usuarios/login
 router.post("/loginUsuario", loginUsuario);
+
+// POST /usuarios/refresh
+router.post("/refreshToken", refreshToken);
 
 // GET /usuarios/getPerfil
 router.get("/getPerfil", verificarToken, getPerfil);

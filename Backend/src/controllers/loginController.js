@@ -1,6 +1,7 @@
 import turso from "../models/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -31,16 +32,23 @@ export const loginUsuario = async (req, res) => {
       return res.status(401).json({ error: "Credenciales inválidas" });
     }
 
-    // Crear token JWT
-    const token = jwt.sign(
+    // Crear Access Token (corta duración)
+    const accessToken = jwt.sign(
       { id: usuario.id_usuario, email: usuario.email, id_rol: usuario.id_rol },
       SECRET_KEY,
-      { expiresIn: "5h" }
+      { expiresIn: "15m" } // 15 minutos
     );
 
-    const decodedToken = jwt.decode(token);
-    const createdAt = new Date(decodedToken.iat * 1000).toISOString();
-    const expiresAt = new Date(decodedToken.exp * 1000).toISOString();
+    // Crear Refresh Token (larga duración)
+    const refreshToken = crypto.randomBytes(64).toString("hex");
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // Almacenar refresh token en la base de datos
+    await turso.execute({
+      sql: "INSERT INTO refresh_token (id_usuario, token, expires_at) VALUES (?, ?, ?)",
+      args: [usuario.id_usuario, refreshToken, expiresAt.toISOString().slice(0, 19).replace('T', ' ')],
+    });
 
     res.status(200).json({
       mensaje: "Login exitoso",
@@ -49,9 +57,8 @@ export const loginUsuario = async (req, res) => {
         email: usuario.email,
         id_rol: usuario.id_rol,
       },
-      token,
-      token_creado: createdAt,
-      token_expira: expiresAt,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     console.error("Error en login:", error);
