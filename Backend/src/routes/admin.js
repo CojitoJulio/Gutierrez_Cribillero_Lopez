@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { registroPremios, getPremios, getPremio, estadoPremio, updatePremio, createPremio } from "../controllers/adminController.js";
+import { registroPremios, getPremios, getPremio, estadoPremio, updatePremio, createPremio, registrarAdmin } from "../controllers/adminController.js";
 import { verificarToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
 // GET /api/canje/historial
 router.get("/historial", verificarToken, registroPremios)
+
+router.post("/createAdmin", verificarToken, registrarAdmin)
 
 router.get("/premios", verificarToken, getPremios)
 

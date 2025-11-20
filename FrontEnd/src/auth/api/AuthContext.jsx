@@ -71,6 +71,23 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const registerAdmin = async (name, email, password) => {
+        setLoading(true);
+        try {
+            const res = await api.post("/api/admin/createAdmin", {
+                email,
+                nombre: name,
+                password
+            });
+            return res.data;
+        } catch (err) {
+            console.error("Error en el registro:", err);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -164,6 +181,7 @@ export const AuthProvider = ({ children }) => {
                 login,
                 logout,
                 register,
+                registerAdmin,
                 api,
             }}
         >

@@ -20,6 +20,7 @@ import RedirectIfAuthenticated from "./RedirectIfAuthenticated";
 import AdminRoute from "./AdminRoute";
 import AddPremio from "@/features/admin/premios/addPremio";
 import ModPremio from "@/features/admin/premios/modPremio";
+import CreateAdmin from "@/features/admin/createAdmin";
 
 export default function AppRouter() {
     const primary = "#00bfb3";
@@ -51,6 +52,7 @@ export default function AppRouter() {
                             <Route path="/admin/managerewards" element={<ManageRewards />} />
                             <Route path="/admin/managerewards/addreward" element={<AddPremio />} />
                             <Route path="/admin/managerewards/modreward/:id" element={<ModPremio />} />
+                            <Route path="/admin/createadmin" element={<CreateAdmin />} />
 
                         </Route>
 

@@ -33,6 +33,15 @@ export default function AdminPage() {
                 </button>
             </Link>
 
+            <Link to="/admin/createadmin">
+                <button
+                    className="mt-6 w-full rounded-2xl py-4 text-white text-2xl font-bold shadow-md active:scale-[.99] transition"
+                    style={{ backgroundColor: colors.darkTeal }}
+                >
+                    Crear Usuario Administrador
+                </button>
+            </Link>
+
         </div>
     );
 }

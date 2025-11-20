@@ -140,7 +140,7 @@ export default function StatsScreen() {
                 <div className="mt-6 flex flex-col gap-8">
 
                     {/* Tarjetas de Resumen */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         <StatCard title="Total Histórico" value={processedStats.summary.total} unit="items" />
                         <StatCard title="Promedio por Usuario" value={processedStats.summary.average} unit="items" />
                         {processedStats.summary.busiestDay ? (
@@ -156,7 +156,7 @@ export default function StatsScreen() {
                         ) : <StatCard title="Día más Activo" value="N/A" />}
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 gap-8">
                         {/* Gráfico de Torta por Sede */}
                         {processedStats.bySede && processedStats.bySede.length > 0 && (
                             <div className="flex flex-col">
