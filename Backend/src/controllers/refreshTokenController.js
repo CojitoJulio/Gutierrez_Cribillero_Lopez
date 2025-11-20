@@ -36,12 +36,12 @@ export const refreshToken = async (req, res) => {
 
     // 3. Buscar la información del usuario
     const userResult = await turso.execute({
-        sql: "SELECT * FROM usuario WHERE id_usuario = ?",
-        args: [oldToken.id_usuario],
+      sql: "SELECT * FROM usuario WHERE id_usuario = ?",
+      args: [oldToken.id_usuario],
     });
 
     if (userResult.rows.length === 0) {
-        return res.status(403).json({ error: "Usuario no encontrado" });
+      return res.status(403).json({ error: "Usuario no encontrado" });
     }
     const usuario = userResult.rows[0];
 

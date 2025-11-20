@@ -1,7 +1,8 @@
 import express from "express";
 import usuariosRoutes from "./routes/usuarios.js";
 import reciclajeRoutes from "./routes/reciclaje.js";
-import canjeRoutes from "./routes/canje.js"; // Importar nueva ruta
+import canjeRoutes from "./routes/canje.js";
+import adminRoutes from "./routes/admin.js";
 import 'dotenv/config';
 import cors from "cors";
 
@@ -19,7 +20,9 @@ app.use(express.urlencoded({
 // Rutas
 app.use("/api/usuario", usuariosRoutes);
 app.use("/api/reciclaje", reciclajeRoutes);
-app.use("/api/canje", canjeRoutes); // Usar nueva ruta
+app.use("/api/canje", canjeRoutes);
+app.use("/api/admin", adminRoutes);
+
 
 
 app.listen(PORT, () => {

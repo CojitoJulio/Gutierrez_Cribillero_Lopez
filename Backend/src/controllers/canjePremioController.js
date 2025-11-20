@@ -110,7 +110,7 @@ export const validarCanje = async (req, res) => {
 
     if (canjeRes.rows.length === 0) {
       await tx.rollback();
-      return res.status(404).json({ mensaje: 'El código no es válido.' });
+      return res.status(404).json({ error: 'El código no es válido.' });
     }
 
     const { id_estado: idEstadoActual, estado_nombre: estadoNombreActual } = canjeRes.rows[0];
@@ -165,7 +165,7 @@ export const validarCanje = async (req, res) => {
 export const getpremios = async (req, res) => {
   try {
     const premiosRes = await turso.execute({
-      sql: "SELECT id_premio, nombre, foto, puntos_requeridos, stock FROM premio",
+      sql: "SELECT id_premio, nombre, foto, puntos_requeridos, stock FROM premio where disponible = 1",
       args: [],
     });
 
@@ -195,5 +195,53 @@ export const verificarCanje = async (req, res) => {
   } catch (error) {
     console.error('Error al obtener la lista de premios:', error);
     res.status(500).json({ error: 'Error interno del servidor al obtener la lista de premios.' });
+  }
+};
+
+export const resumenCanje = async (req, res) => {
+  const { id_canje } = req.body;
+  try {
+    const resumenRes = await turso.execute({
+      sql: `
+        select cp.id_canje, p.foto, p.nombre as premio, cp.fecha, p.puntos_requeridos, p.stock, u.nombre, u.puntos, ec.nombre as estado
+        from canje_premio as cp 
+        join premio as p on cp.id_premio = p.id_premio
+        join usuario as u on cp.id_usuario = u.id_usuario
+        join estado_canje as ec on cp.id_estado = ec.id_estado
+        where cp.id_canje = ?`,
+      args: [id_canje],
+    });
+
+    if (resumenRes.rows.length === 0) {
+      return res.status(200).json({ "error": "ID de canje no encontrado" });
+    }
+    res.status(200).json(resumenRes.rows[0]);
+
+  } catch (error) {
+    console.error('Error al obtener el resumen del canje:', error);
+    res.status(500).json({ error: 'Error interno del servidor al obtener el resumen del canje.' });
+  }
+};
+
+export const registroPremios = async (req, res) => {
+  try {
+    const premiosRes = await turso.execute({
+      sql: `
+        select cp.id_canje, p.foto, p.nombre as premio, cp.fecha, p.puntos_requeridos, p.stock, u.nombre, u.puntos, ec.nombre as estado
+        from canje_premio as cp 
+        join premio as p on cp.id_premio = p.id_premio
+        join usuario as u on cp.id_usuario = u.id_usuario
+        join estado_canje as ec on cp.id_estado = ec.id_estado`,
+      args: [],
+    });
+
+    if (premiosRes.rows.length === 0) {
+      return res.status(200).json({ "mensaje": "No se encontraron datos" });
+    }
+    res.status(200).json({ premios: premiosRes.rows });
+
+  } catch (error) {
+    console.error('Error al obtener el historial de premios:', error);
+    res.status(500).json({ error: 'Error interno del servidor al obtener el historial de premios.' });
   }
 };
