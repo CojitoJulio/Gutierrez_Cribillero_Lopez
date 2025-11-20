@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registroPremios, getPremios, getPremio, desactivarPremio, updatePremio, createPremio, activarPremio } from "../controllers/adminController.js";
+import { registroPremios, getPremios, getPremio, estadoPremio, updatePremio, createPremio } from "../controllers/adminController.js";
 import { verificarToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
@@ -9,9 +9,7 @@ router.get("/historial", verificarToken, registroPremios)
 
 router.get("/premios", verificarToken, getPremios)
 
-router.put("/desactivarPremio", verificarToken, desactivarPremio)
-
-router.put("/activarPremio", verificarToken, activarPremio)
+router.put("/estadoPremio", verificarToken, estadoPremio)
 
 router.put("/premio", verificarToken, updatePremio)
 

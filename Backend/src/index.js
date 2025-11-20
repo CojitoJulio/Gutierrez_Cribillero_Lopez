@@ -3,6 +3,7 @@ import usuariosRoutes from "./routes/usuarios.js";
 import reciclajeRoutes from "./routes/reciclaje.js";
 import canjeRoutes from "./routes/canje.js";
 import adminRoutes from "./routes/admin.js";
+import statsRoutes from "./routes/stats.js";
 import 'dotenv/config';
 import cors from "cors";
 
@@ -22,6 +23,7 @@ app.use("/api/usuario", usuariosRoutes);
 app.use("/api/reciclaje", reciclajeRoutes);
 app.use("/api/canje", canjeRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/stats", statsRoutes);
 
 
 

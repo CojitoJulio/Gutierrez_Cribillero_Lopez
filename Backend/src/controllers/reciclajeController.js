@@ -3,13 +3,13 @@ import supabase from "../models/supabase.js";
 
 export const crearReciclaje = async (req, res) => {
   try {
-    const { id_deposito, materiales } = req.body;
+    const { id_sede, materiales } = req.body;
     const { id: id_usuario } = req.usuario;
 
     // Validar datos requeridos
-    if (!id_deposito || !materiales || !Array.isArray(materiales) || materiales.length === 0) {
+    if (!id_sede || !materiales || !Array.isArray(materiales) || materiales.length === 0) {
       return res.status(400).json({
-        error: "Datos incompletos. Se requiere id_deposito y al menos un material"
+        error: "Datos incompletos. Se requiere id_sede y al menos un material"
       });
     }
 
@@ -28,11 +28,11 @@ export const crearReciclaje = async (req, res) => {
     // Insertar el reciclaje primero para obtener el ID
     const resultReciclaje = await turso.execute({
       sql: `
-        INSERT INTO reciclaje (id_usuario, id_deposito, fecha)
+        INSERT INTO reciclaje (id_usuario, id_sede, fecha)
         VALUES (?, ?, ?)
         RETURNING id_reciclaje
       `,
-      args: [id_usuario, id_deposito, fecha]
+      args: [id_usuario, id_sede, fecha]
     });
 
     const id_reciclaje = resultReciclaje.rows[0].id_reciclaje;

@@ -13,6 +13,7 @@ import AdminPage from "@/features/admin/adminpage";
 import QRscanScreen from "@/features/admin/QRscanScreen";
 import RewardsHistory from "@/features/admin/rewarshistory";
 import ManageRewards from "@/features/admin/managerewards";
+import StatsScreen from "@/features/stats/statspage";
 
 import ProtectedRoute from "./ProtectedRoute";
 import RedirectIfAuthenticated from "./RedirectIfAuthenticated";
@@ -41,6 +42,7 @@ export default function AppRouter() {
                         <Route path="/profile" element={<ProfileScreen />} />
                         <Route path="/list" element={<ResultsList />} />
                         <Route path="/summary" element={<RecycleSummary />} />
+                        <Route path="/stats" element={<StatsScreen />} />
 
                         <Route element={<AdminRoute />}>
                             <Route path="/admin/qrscan" element={<QRscanScreen />} />

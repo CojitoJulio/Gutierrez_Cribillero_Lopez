@@ -11,6 +11,7 @@ const premioSchema = z.object({
     nombre: z.string().min(3, "El nombre debe tener al menos 3 caracteres").max(50, "El nombre es muy largo"),
     puntos_requeridos: z.coerce.number().positive("Los puntos deben ser un número positivo"),
     stock: z.coerce.number().min(0, "El stock no puede ser negativo"),
+    disponible: z.number().optional(), // Hacemos que 'disponible' sea parte del schema
 });
 
 export default function ModPremio() {
@@ -35,7 +36,7 @@ export default function ModPremio() {
                 setLoadingState(true);
                 setApiError("");
                 const { data } = await api.get(`/api/admin/premiosolo?id_premio=${id}`);
-                if (data) { // Asumimos que la API devuelve un objeto con los datos del premio
+                if (data) {
                     reset(data);
                 } else {
                     throw new Error("Premio no encontrado");
@@ -51,16 +52,16 @@ export default function ModPremio() {
 
     const handleToggleDisponible = useCallback(async (e) => {
         const isChecked = e.target.checked;
-        const endpoint = isChecked ? "/api/admin/activarPremio" : "/api/admin/desactivarPremio";
-        const actionText = isChecked ? "habilitado" : "deshabilitado";
+        const nuevoEstado = isChecked ? "1" : "0"; // "1" para activo, "0" para desactivado
+        const actionText = isChecked ? "habilitar" : "deshabilitar";
 
         setIsToggleLoading(true);
         setApiError("");
 
         try {
-            await api.put(endpoint, { id_premio: id });
+            await api.put("/api/admin/estadoPremio", { id_premio: id, estado: nuevoEstado });
             // Actualizamos el valor en el formulario para que la UI reaccione
-            setValue("disponible", isChecked ? 1 : 0, { shouldValidate: true });
+            setValue("disponible", isChecked ? 1 : 0, { shouldValidate: false });
         } catch (err) {
             console.error(`Error al ${actionText} el premio:`, err);
             setApiError(err.response?.data?.message || `No se pudo ${actionText} el premio.`);
@@ -180,7 +181,7 @@ export default function ModPremio() {
                             disabled={isToggleLoading}
                             onChange={handleToggleDisponible}
                         />
-                        <div className={`block w-14 h-8 rounded-full ${disponible === 1 ? 'bg-green-500' : 'bg-gray-600'}`}></div>
+                        <div className={`block w-14 h-8 rounded-full ${disponible === 1 ? `bg-green-800` : 'bg-gray-600'}`}></div>
                         <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${disponible === 1 ? 'transform translate-x-6' : ''}`}></div>
                     </div>
                     <div className="ml-3 text-gray-700 font-medium">

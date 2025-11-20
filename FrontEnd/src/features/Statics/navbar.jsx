@@ -23,8 +23,8 @@ export default function Navbar() {
                         </NavIcon>
                     </Link>
 
-                    <Link>
-                        <NavIcon label="Estadísticas" >
+                    <Link to={'/stats'}>
+                        <NavIcon label="Estadísticas" active={location.pathname === '/stats'}>
                             <img src={chartIcon} alt="" />
                         </NavIcon>
                     </Link>

@@ -4,7 +4,6 @@ import { useAuth } from "@/auth/api/AuthContext";
 import { useNavigate } from "react-router";
 import { useTheme } from "@/app/context/ThemeContext";
 
-// Componente para una fila de la boleta
 function ReceiptRow({ label, value, isTotal = false }) {
     return (
         <div className={`flex justify-between items-center ${isTotal ? "text-lg font-bold border-t border-dashed border-gray-400 pt-2 mt-2" : "text-base"}`}>
@@ -68,7 +67,7 @@ export default function RecycleSummary() {
                     ...it,
                     materialId: materialInfo ? materialInfo.id_material : null,
                 };
-            }).filter(it => it.materialId !== null); // <-- FILTRAR AQUÍ
+            }).filter(it => it.materialId !== null);
 
             if (itemsWithMaterialId.length === 0) {
                 setError("Ninguno de los materiales escaneados pudo ser reconocido. No se puede registrar el reciclaje.");
@@ -96,7 +95,7 @@ export default function RecycleSummary() {
 
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
             await api.post("/api/reciclaje/registroReciclaje", {
-                id_deposito: 2, // ID de depósito fijo por ahora
+                id_sede: 2,
                 materiales: finalMateriales,
             }, { headers });
 

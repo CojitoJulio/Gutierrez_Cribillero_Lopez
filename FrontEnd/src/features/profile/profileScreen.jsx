@@ -190,7 +190,7 @@ function HistoryItem({ item, accent = "#00bfb3", dark = "#0a615c" }) {
         <div className="flex items-center justify-between rounded-2xl border bg-white px-4 py-3">
             <div className="flex items-center gap-3">
                 <div
-                    className="w-12 h-12 rounded-xl grid place-items-center"
+                    className="w-12 h-12 m-1 rounded-xl grid place-items-center"
                     style={{ backgroundColor: `${accent}22`, color: dark }}
                 >
                     <LeafIcon />
@@ -204,7 +204,7 @@ function HistoryItem({ item, accent = "#00bfb3", dark = "#0a615c" }) {
                     </div>
                 </div>
             </div>
-            <div className="font-bold" style={{ color: dark }}>
+            <div className="font-bold m-0.5" style={{ color: dark }}>
                 +{puntajetotal} pts
             </div>
         </div>

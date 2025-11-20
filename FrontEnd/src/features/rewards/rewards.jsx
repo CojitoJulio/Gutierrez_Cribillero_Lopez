@@ -129,9 +129,11 @@ export default function RewardsScreen() {
 }
 
 function ShowQRModal({ id_canje, onClose }) {
+
+    const { colors } = useTheme();
     return (
         <div
-            className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
             onClick={onClose}
         >
             <div
@@ -139,7 +141,7 @@ function ShowQRModal({ id_canje, onClose }) {
                 onClick={(e) => e.stopPropagation()}
             >
 
-                <h3 className="text-2xl font-bold mb-4 text-gray-800">¡Escanea el código!</h3>
+                <h3 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }} >¡Escanea el código!</h3>
 
                 <div className="w-64 h-64 p-2 bg-white rounded-md flex items-center justify-center border border-gray-200">
                     <QRCode

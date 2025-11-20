@@ -10,7 +10,8 @@ export const registroPremios = async (req, res) => {
         from canje_premio as cp 
         join premio as p on cp.id_premio = p.id_premio
         join usuario as u on cp.id_usuario = u.id_usuario
-        join estado_canje as ec on cp.id_estado = ec.id_estado`,
+        join estado_canje as ec on cp.id_estado = ec.id_estado
+        order by cp.fecha desc`,
             args: [],
         });
 
@@ -53,7 +54,7 @@ export const getPremio = async (req, res) => {
 
     try {
         const premiosRes = await turso.execute({
-            sql: "SELECT id_premio, nombre, foto, puntos_requeridos, stock FROM premio where id_premio = ?",
+            sql: "SELECT id_premio, nombre, foto, puntos_requeridos, stock, disponible FROM premio where id_premio = ?",
             args: [id_premio],
         });
 
@@ -64,10 +65,10 @@ export const getPremio = async (req, res) => {
     }
 };
 
-// Eliminar Premio
+// Estado del Premio
 
-export const desactivarPremio = async (req, res) => {
-    const { id_premio } = req.body;
+export const estadoPremio = async (req, res) => {
+    const { id_premio, estado } = req.body;
 
     if (!id_premio) {
         return res.status(400).json({ error: "El ID del premio es requerido." });
@@ -75,8 +76,8 @@ export const desactivarPremio = async (req, res) => {
 
     try {
         const result = await turso.execute({
-            sql: "UPDATE premio set disponible = 0 WHERE id_premio = ?",
-            args: [id_premio],
+            sql: "UPDATE premio set disponible = ? WHERE id_premio = ?",
+            args: [estado, id_premio],
         });
 
         if (result.rowsAffected === 0) {
@@ -90,31 +91,6 @@ export const desactivarPremio = async (req, res) => {
     }
 };
 
-// Activar Premio
-
-export const activarPremio = async (req, res) => {
-    const { id_premio } = req.body;
-
-    if (!id_premio) {
-        return res.status(400).json({ error: "El ID del premio es requerido." });
-    }
-
-    try {
-        const result = await turso.execute({
-            sql: "UPDATE premio set disponible = 1 WHERE id_premio = ?",
-            args: [id_premio],
-        });
-
-        if (result.rowsAffected === 0) {
-            return res.status(404).json({ error: "Premio no encontrado." });
-        }
-
-        res.status(200).json({ mensaje: "Premio activado correctamente." });
-    } catch (error) {
-        console.error('Error al activar el premio:', error);
-        res.status(500).json({ error: 'Error interno del servidor al activar el premio.' });
-    }
-};
 
 // Actualizar Premio
 
