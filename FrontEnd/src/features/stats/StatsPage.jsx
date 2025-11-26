@@ -16,6 +16,7 @@ import {
 } from 'recharts';
 import { useAuth } from "../../auth/api/AuthContext";
 import { useTheme } from "@/app/context/ThemeContext";
+import RecycleLoader from "../Statics/RecycleLoading";
 
 export default function StatsScreen() {
     const [processedStats, setProcessedStats] = useState(null);
@@ -131,111 +132,116 @@ export default function StatsScreen() {
 
     return (
         <div className="pb-6 px-4">
-            <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: colors.darkTeal }}>Estadísticas</h1>
 
-            {loadingState && <p>Cargando estadísticas...</p>}
-            {err && <p className="text-red-500">Error: No se pudieron cargar las estadísticas.</p>}
+            {loadingState ?
+                <RecycleLoader />
+                : (<>
 
-            {processedStats && !loadingState && !err && (
-                <div className="mt-6 flex flex-col gap-8">
+                    <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: colors.darkTeal }}>Estadísticas</h1>
 
-                    {/* Tarjetas de Resumen */}
-                    <div className="grid grid-cols-1 gap-4">
-                        <StatCard title="Total Histórico" value={processedStats.summary.total} unit="items" />
-                        <StatCard title="Promedio por Usuario" value={processedStats.summary.average} unit="items" />
-                        {processedStats.summary.busiestDay ? (
-                            <div className="p-4 rounded-xl shadow" style={{ backgroundColor: colors.lightTeal }}>
-                                <p className="text-sm font-semibold" style={{ color: colors.darkTeal }}>Día más Activo</p>
-                                <p className="text-xl font-bold" style={{ color: colors.darkTeal }}>
-                                    {new Date(processedStats.summary.busiestDay.date).toLocaleDateString('es-CL', { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric' })}
-                                </p>
-                                <p className="text-lg" style={{ color: colors.darkTeal }}>
-                                    ({processedStats.summary.busiestDay.cantidad} items)
-                                </p>
+                    {loadingState && <p>Cargando estadísticas...</p>}
+                    {err && <p className="text-red-500">Error: No se pudieron cargar las estadísticas.</p>}
+
+                    {processedStats && !loadingState && !err && (
+                        <div className="mt-6 flex flex-col gap-8">
+
+                            {/* Tarjetas de Resumen */}
+                            <div className="grid grid-cols-1 gap-4">
+                                <StatCard title="Total Histórico" value={processedStats.summary.total} unit="items" />
+                                <StatCard title="Promedio por Usuario" value={processedStats.summary.average} unit="items" />
+                                {processedStats.summary.busiestDay ? (
+                                    <div className="p-4 rounded-xl shadow" style={{ backgroundColor: colors.lightTeal }}>
+                                        <p className="text-sm font-semibold" style={{ color: colors.darkTeal }}>Día más Activo</p>
+                                        <p className="text-xl font-bold" style={{ color: colors.darkTeal }}>
+                                            {new Date(processedStats.summary.busiestDay.date).toLocaleDateString('es-CL', { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric' })}
+                                        </p>
+                                        <p className="text-lg" style={{ color: colors.darkTeal }}>
+                                            ({processedStats.summary.busiestDay.cantidad} items)
+                                        </p>
+                                    </div>
+                                ) : <StatCard title="Día más Activo" value="N/A" />}
                             </div>
-                        ) : <StatCard title="Día más Activo" value="N/A" />}
-                    </div>
 
-                    <div className="grid grid-cols-1 gap-8">
-                        {/* Gráfico de Torta por Sede */}
-                        {processedStats.bySede && processedStats.bySede.length > 0 && (
-                            <div className="flex flex-col">
-                                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>Reciclaje por Sede</h2>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                        <Pie data={processedStats.bySede} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
-                                            {processedStats.bySede.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                            <div className="grid grid-cols-1 gap-8">
+                                {/* Gráfico de Torta por Sede */}
+                                {processedStats.bySede && processedStats.bySede.length > 0 && (
+                                    <div className="flex flex-col">
+                                        <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>Reciclaje por Sede</h2>
+                                        <ResponsiveContainer width="100%" height={300}>
+                                            <PieChart>
+                                                <Pie data={processedStats.bySede} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
+                                                    {processedStats.bySede.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                                <Legend />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                )}
+
+                                {/* Ranking de Usuarios */}
+                                {processedStats.topUsers && processedStats.topUsers.length > 0 && (
+                                    <div>
+                                        <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>🏆 Héroes del Reciclaje</h2>
+                                        <div className="divide-y divide-neutral-200 border-y border-neutral-200 rounded-lg overflow-hidden">
+                                            {processedStats.topUsers.map((user, index) => (
+                                                <div key={user.name} className="flex items-center justify-between p-3" style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f7f7f7' }}>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="font-bold text-lg">{index + 1}.</span>
+                                                        <div className="text-lg font-semibold text-neutral-800">{user.name}</div>
+                                                    </div>
+                                                    <div className="text-lg font-bold text-neutral-900">
+                                                        {user.cantidad.toLocaleString()} <span className="font-semibold text-neutral-600">items</span>
+                                                    </div>
+                                                </div>
                                             ))}
-                                        </Pie>
-                                        <Tooltip />
-                                        <Legend />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-                        )}
-
-                        {/* Ranking de Usuarios */}
-                        {processedStats.topUsers && processedStats.topUsers.length > 0 && (
-                            <div>
-                                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>🏆 Héroes del Reciclaje</h2>
-                                <div className="divide-y divide-neutral-200 border-y border-neutral-200 rounded-lg overflow-hidden">
-                                    {processedStats.topUsers.map((user, index) => (
-                                        <div key={user.name} className="flex items-center justify-between p-3" style={{ backgroundColor: index % 2 === 0 ? 'white' : '#f7f7f7' }}>
-                                            <div className="flex items-center gap-3">
-                                                <span className="font-bold text-lg">{index + 1}.</span>
-                                                <div className="text-lg font-semibold text-neutral-800">{user.name}</div>
-                                            </div>
-                                            <div className="text-lg font-bold text-neutral-900">
-                                                {user.cantidad.toLocaleString()} <span className="font-semibold text-neutral-600">items</span>
-                                            </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
 
-                    {/* Gráfico de Reciclaje por Material */}
-                    {processedStats.byMaterial && processedStats.byMaterial.length > 0 && (
-                        <div>
-                            <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>Reciclaje por Material</h2>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <BarChart data={processedStats.byMaterial}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="name" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Bar dataKey="cantidad" fill={colors.primary} name="Cantidad" />
-                                </BarChart>
-                            </ResponsiveContainer>
+                            {/* Gráfico de Reciclaje por Material */}
+                            {processedStats.byMaterial && processedStats.byMaterial.length > 0 && (
+                                <div>
+                                    <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>Reciclaje por Material</h2>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <BarChart data={processedStats.byMaterial}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar dataKey="cantidad" fill={colors.primary} name="Cantidad" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            )}
+
+                            {/* Gráfico de Actividad de Reciclaje */}
+                            {processedStats.activity && processedStats.activity.length > 0 && (
+                                <div>
+                                    <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>Tendencia de Reciclaje (Cantidad)</h2>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <LineChart data={processedStats.activity}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="date" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Line type="monotone" dataKey="cantidad" stroke={colors.darkTeal} name="Items Reciclados" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            )}
+
+                            {processedStats.summary.total === 0 && (
+                                <p>No hay datos de estadísticas para mostrar.</p>
+                            )}
                         </div>
                     )}
-
-                    {/* Gráfico de Actividad de Reciclaje */}
-                    {processedStats.activity && processedStats.activity.length > 0 && (
-                        <div>
-                            <h2 className="text-2xl font-bold mb-4" style={{ color: colors.darkTeal }}>Tendencia de Reciclaje (Cantidad)</h2>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <LineChart data={processedStats.activity}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="date" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-                                    <Line type="monotone" dataKey="cantidad" stroke={colors.darkTeal} name="Items Reciclados" />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </div>
-                    )}
-
-                    {processedStats.summary.total === 0 && (
-                        <p>No hay datos de estadísticas para mostrar.</p>
-                    )}
-                </div>
-            )}
-
+                </>)}
         </div>
     );
 }

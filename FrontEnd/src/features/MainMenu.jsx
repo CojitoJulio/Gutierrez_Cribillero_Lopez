@@ -7,7 +7,7 @@ export default function MainMenu() {
     return (
         <div className="w-full grid place-items-center bg-neutral-100">
             {/* Marco del “teléfono” */}
-            <div className="w-[380px] max-w-full h-dvh bg-white rounded-[28px] overflow-hidden">
+            <div className="w-[380px] max-w-full h-dvh bg-whiteoverflow-hidden">
                 {/* 3 filas: header / contenido / nav */}
                 <div className="grid h-full grid-rows-[auto_1fr_auto]">
                     {/* Fila 1: Header fijo */}

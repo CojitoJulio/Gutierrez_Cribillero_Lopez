@@ -9,6 +9,7 @@ export default function CameraCapture({
     maxHeight,
     onCapture,
     takeData = {},
+    onRetake,
     onAdd,
     title,
 }) {
@@ -189,6 +190,7 @@ export default function CameraCapture({
         setPhotoBlob(null);
         setPhotoUrl(null);
         setPhotoDataUrl(null);
+        onRetake && onRetake();
 
         // por si el navegador pausó el video
         const video = videoRef.current;
@@ -224,7 +226,7 @@ export default function CameraCapture({
     };
 
     return (
-        <div className="flex flex-col items-center gap-3 p-4 max-w-md mx-auto">
+        <div className="flex flex-col items-center gap-3 p-4 max-w-md mx-auto h-[380px] ">
             <h1 className="text-xl font-semibold">{title}</h1>
 
             {/* Preview cámara */}

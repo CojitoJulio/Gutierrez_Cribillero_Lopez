@@ -2,6 +2,7 @@ import QRCode from "react-qr-code";
 import { useState, useEffect } from "react";
 import { useAuth } from "../../auth/api/AuthContext";
 import { useTheme } from "@/app/context/ThemeContext";
+import RecycleLoader from "../Statics/RecycleLoading";
 
 export default function RewardsScreen() {
     const [modalAbierto, setModalAbierto] = useState(false);
@@ -92,38 +93,42 @@ export default function RewardsScreen() {
     return (
         <div className="pb-6 px-4">
 
-            {modalAbierto && <ShowQRModal id_canje={idCanjeActivo} onClose={() => setModalAbierto(false)} />}
+            {loadingState ?
+                <RecycleLoader />
+                : (<>
+                    {modalAbierto && <ShowQRModal id_canje={idCanjeActivo} onClose={() => setModalAbierto(false)} />}
 
-            <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: colors.darkTeal }}>Recompensas</h1>
+                    <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: colors.darkTeal }}>Recompensas</h1>
 
-            <p className="mt-2 text-lg font-bold" style={{ color: colors.darkTeal }}>
-                <strong className="text-2xl">{shownUser.puntos}</strong> Puntos disponibles
-            </p>
+                    <p className="mt-2 text-lg font-bold" style={{ color: colors.darkTeal }}>
+                        <strong className="text-2xl">{shownUser.puntos}</strong> Puntos disponibles
+                    </p>
 
-            {/* Sección Premios */}
-            <h2 className="mt-6 text-3xl font-extrabold" style={{ color: colors.darkTeal }}>
-                Premios
-            </h2>
+                    {/* Sección Premios */}
+                    <h2 className="mt-6 text-3xl font-extrabold" style={{ color: colors.darkTeal }}>
+                        Premios
+                    </h2>
 
-            <div className="mt-4 space-y-4">
-                {shownPremios.length === 0 ? (
-                    <EmptyState />
-                ) : (
-                    <div className="space-y-3">
-                        {shownPremios.map((item) => (
-                            <RewardItem
-                                key={item.id_premio}
-                                title={item.nombre}
-                                points={item.puntos_requeridos}
-                                cardBg={colors.cardBg}
-                                iconBg={colors.iconBg}
-                                dark={colors.darkTeal}
-                                onClick={() => handleQRClick(item.id_premio)}
-                            />
-                        ))}
+                    <div className="mt-4 space-y-4">
+                        {shownPremios.length === 0 ? (
+                            <EmptyState />
+                        ) : (
+                            <div className="space-y-3">
+                                {shownPremios.map((item) => (
+                                    <RewardItem
+                                        key={item.id_premio}
+                                        title={item.nombre}
+                                        points={item.puntos_requeridos}
+                                        cardBg={colors.cardBg}
+                                        iconBg={colors.iconBg}
+                                        dark={colors.darkTeal}
+                                        onClick={() => handleQRClick(item.id_premio)}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
-                )}
-            </div>
+                </>)}
         </div>
     );
 }

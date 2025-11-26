@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../auth/api/AuthContext";
 import { useTheme } from "@/app/context/ThemeContext";
+import RecycleLoader from "../Statics/RecycleLoading";
 
 export default function HomePage() {
 
@@ -42,61 +43,66 @@ export default function HomePage() {
     return (
         <div className="pb-6 px-4 ">
 
-            <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: colors.darkTeal }}>ReciclaDUOC</h1>
+            {loadingState ?
+                <RecycleLoader />
+                : (<>
 
-            {/* Primary button */}
-            <Link to={'/recycle'}>
-                <button
-                    className="mt-6 w-full rounded-2xl py-4 text-white text-2xl font-bold shadow-md active:scale-[.99] transition"
-                    style={{ backgroundColor: colors.primary }}
-                >
-                    Reciclar
-                </button>
-            </Link>
+                    <h1 className="mt-2 text-[40px] leading-none font-extrabold" style={{ color: colors.darkTeal }}>ReciclaDUOC</h1>
 
-            {/* Points */}
-            <div className="mt-6 text-center">
-                <div className="text-3xl font-extrabold" style={{ color: colors.darkTeal }}>{user?.puntos || 0} puntos</div>
-            </div>
+                    {/* Primary button */}
+                    <Link to={'/recycle'}>
+                        <button
+                            className="mt-6 w-full rounded-2xl py-4 text-white text-2xl font-bold shadow-md active:scale-[.99] transition"
+                            style={{ backgroundColor: colors.primary }}
+                        >
+                            Reciclar
+                        </button>
+                    </Link>
 
-            {/* Secondary actions */}
-            <button
-                className="mt-4 w-full rounded-2xl py-4 text-xl font-bold"
-                style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}
-            >
-                Ganar Puntos
-            </button>
+                    {/* Points */}
+                    <div className="mt-6 text-center">
+                        <div className="text-3xl font-extrabold" style={{ color: colors.darkTeal }}>{user?.puntos || 0} puntos</div>
+                    </div>
 
-            <Link to={'/rewards'}>
-                <button
-                    className="mt-4 w-full rounded-2xl py-4 text-xl font-extrabold text-white"
-                    style={{ backgroundColor: colors.darkTeal }}
-                >
-                    Canjear Premios
-                </button>
-            </Link>
-            {isAdmin && (
-                <Link to={'/admin'}>
+                    {/* Secondary actions */}
                     <button
-                        className="mt-4 w-full rounded-2xl py-4 text-xl font-extrabold text-white"
-                        style={{ backgroundColor: colors.darkTeal }}
+                        className="mt-4 w-full rounded-2xl py-4 text-xl font-bold"
+                        style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}
                     >
-                        Panel de Admin
+                        Ganar Puntos
                     </button>
-                </Link>
-            )}
+
+                    <Link to={'/rewards'}>
+                        <button
+                            className="mt-4 w-full rounded-2xl py-4 text-xl font-extrabold text-white"
+                            style={{ backgroundColor: colors.darkTeal }}
+                        >
+                            Canjear Premios
+                        </button>
+                    </Link>
+                    {isAdmin && (
+                        <Link to={'/admin'}>
+                            <button
+                                className="mt-4 w-full rounded-2xl py-4 text-xl font-extrabold text-white"
+                                style={{ backgroundColor: colors.darkTeal }}
+                            >
+                                Panel de Admin
+                            </button>
+                        </Link>
+                    )}
 
 
-            {/* Ranking card */}
-            <div className="mt-6">
-                <div className="text-3xl font-extrabold" style={{ color: colors.darkTeal }}>Ranking</div>
+                    {/* Ranking card */}
+                    <div className="mt-6">
+                        <div className="text-3xl font-extrabold" style={{ color: colors.darkTeal }}>Ranking</div>
 
-                <div className="mt-3 divide-y divide-neutral-200 border-y border-neutral-200">
-                    {ranking?.map((user, index) => (
-                        <RankRow key={user.nombre} place={index + 1} name={user.nombre} points={user.puntos} />
-                    ))}
-                </div>
-            </div>
+                        <div className="mt-3 divide-y divide-neutral-200 border-y border-neutral-200">
+                            {ranking?.map((user, index) => (
+                                <RankRow key={user.nombre} place={index + 1} name={user.nombre} points={user.puntos} />
+                            ))}
+                        </div>
+                    </div>
+                </>)}
         </div >
     );
 }
