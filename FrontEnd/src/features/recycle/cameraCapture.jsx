@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useTheme } from "@/app/context/ThemeContext";
+import { useRecycleStore } from "@/app/context/RecycleStore";
 
 export default function CameraCapture({
     initialFacingMode = "environment",
@@ -12,11 +13,13 @@ export default function CameraCapture({
     onRetake,
     onAdd,
     title,
+    puntaje,
 }) {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const streamRef = useRef(null);
     const { colors } = useTheme();
+    const { items } = useRecycleStore();
 
     const [facingMode, setFacingMode] = useState(initialFacingMode);
     const [hasPermission, setHasPermission] = useState(null);
@@ -210,6 +213,7 @@ export default function CameraCapture({
                 id: crypto.randomUUID(),
                 createdAt: Date.now(),
                 photo: photoDataUrl,
+                puntaje: puntaje,
                 ia: takeData?.IAresponse ?? null,
             };
             onAdd && onAdd(item);
@@ -274,29 +278,46 @@ export default function CameraCapture({
                     </button> */}
                 </div>
             ) : (
-                <div className="flex gap-2 w-full">
-                    <button onClick={retake} className="rounded-xl px-4 py-3 flex-1"
-                        style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}>
+                <div className="flex gap-2 w-full justify-center">
+                    <button
+                        onClick={retake}
+                        className={`rounded-xl px-4 py-3 ${takeData?.IAresponse?.data_completa ? 'flex-1' : 'w-full'}`}
+                        style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}
+                    >
                         Repetir
                     </button>
-                    <button
-                        onClick={upload}
-                        disabled={loading}
-                        className="rounded-xl px-4 py-3 flex-1 disabled:opacity-60"
-                        style={{ backgroundColor: colors.darkTeal, color: "white" }}
-                    >
-                        {loading ? "Agregando..." : "Agregar"}
-                    </button>
+                    {takeData?.IAresponse?.data_completa && (
+                        <button
+                            onClick={upload}
+                            disabled={loading}
+                            className="rounded-xl px-4 py-3 flex-1 disabled:opacity-60"
+                            style={{ backgroundColor: colors.darkTeal, color: "white" }}
+                        >
+                            {loading ? "Agregando..." : "Agregar"}
+                        </button>
+                    )}
                 </div>
             )}
 
             {/* Linterna */}
             {hasPermission && !photoBlob && (
-                <button onClick={toggleTorch} className="rounded-xl px-4 py-2"
-                    style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}
-                    title="Linterna">
-                    {torchOn ? "Apagar linterna" : "Encender linterna"}
-                </button>
+                <div className="flex gap-2 w-full">
+                    <button onClick={toggleTorch} className="rounded-xl px-4 py-2 flex-1"
+                        style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}
+                        title="Linterna">
+                        {torchOn ? "Apagar linterna" : "Encender linterna"}
+                    </button>
+                    {items.length > 0 && (
+                        <button
+                            onClick={() => navigate("/list")}
+                            className="rounded-xl px-4 py-2 flex-1"
+                            style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}
+                            title="Ver lista"
+                        >
+                            Lista ({items.length})
+                        </button>
+                    )}
+                </div>
             )}
 
             {hasPermission === false && (

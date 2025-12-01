@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const [isAdmin, setIsAdmin] = useState(false);
 
     const [api] = useState(() => axios.create({
-        baseURL: import.meta.env.BACK_URL || "https://d18pk4pn-3000.use.devtunnels.ms",
+        baseURL: import.meta.env.BACK_URL || "http://localhost:3000/",
     }));
 
     useEffect(() => {

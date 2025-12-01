@@ -122,13 +122,13 @@ export default function ProfileScreen({
 
             {/* Acciones */}
             <section className="mt-6 grid grid-cols-1 gap-3">
-                <button
+                {/* <button
                     onClick={onChangePassword}
                     className="w-full rounded-2xl py-3 font-bold text-white shadow-md active:scale-[.99] transition"
                     style={{ backgroundColor: colors.primary }}
                 >
                     Cambiar contraseña
-                </button>
+                </button> */}
                 <button
                     onClick={handleLogout}
                     className="w-full rounded-2xl py-3 font-bold text-white shadow-md active:scale-[.99] transition"
@@ -193,7 +193,11 @@ function HistoryItem({ item, accent = "#00bfb3", dark = "#0a615c" }) {
                     className="w-12 h-12 m-1 rounded-xl grid place-items-center"
                     style={{ backgroundColor: `${accent}22`, color: dark }}
                 >
-                    <LeafIcon />
+                    {item.productos[0].foto ? (
+                        <img src={item.productos[0].foto} alt={item.productos[0].nombre} className="rounded-xl"></img>
+                    ) : (
+                        <LeafIcon />
+                    )}
                 </div>
                 <div>
                     <div className="font-extrabold" style={{ color: dark }}>

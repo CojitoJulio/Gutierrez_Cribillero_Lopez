@@ -3,7 +3,7 @@ import { useRecycleStore } from "@/app/context/RecycleStore";
 import { Link } from "react-router";
 import { useTheme } from "@/app/context/ThemeContext";
 
-const fmtPct = (v) => (typeof v === "number" ? `${(v * 100).toFixed(1)}%` : v);
+const fmtPct = (v) => (typeof v === "number" ? `${(v * 100).toFixed(0)}%` : v);
 
 function ResultItem({ item, onRemove }) {
     const { colors } = useTheme();
@@ -27,7 +27,7 @@ function ResultItem({ item, onRemove }) {
                 <img
                     src={imgSrc}
                     loading="lazy"
-                    alt={item.material || "foto"}
+                    alt={item.ia.data_completa[0].clase || "foto"}
                     className="w-full h-full object-cover"
                 />
             </div>
@@ -35,28 +35,22 @@ function ResultItem({ item, onRemove }) {
             <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                     <h3 className="font-bold text-lg truncate" style={{ color: colors.darkTeal }}>
-                        {(item.ia.topClass).charAt(0).toUpperCase() + (item.ia.topClass).slice(1) || "Material desconocido"}
+                        {(item.ia.data_completa[0].clase).charAt(0).toUpperCase() + (item.ia.data_completa[0].clase).slice(1) || "Material desconocido"}
                     </h3>
                     {/* Puntaje pill */}
                     <span className="shrink-0 inline-flex items-center px-2.5 py-1 text-sm font-semibold rounded-full"
                         style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal, border: `1px solid ${colors.accent}` }}>
-                        Pts: {item.ia.score ?? "-"}
+                        Pts: {item.puntaje ?? "-"}
                     </span>
                 </div>
 
                 <div className="mt-1 text-sm text-gray-700">
                     <span className="font-semibold text-gray-800">Confianza: </span>
-                    {typeof item.ia.confidence === "number" && item.ia.confidence <= 1
-                        ? fmtPct(item.ia.confidence)
-                        : (item.ia.confidence ?? "-")}
+                    {typeof item.ia.data_completa[0].confianza === "number" && item.ia.data_completa[0].confianza <= 1
+                        ? fmtPct(item.ia.data_completa[0].confianza)
+                        : ((item.ia.data_completa[0].confianza * 100).toFixed(0) ?? "-")}
                 </div>
 
-                {/* Opcional: detalles secundarios */}
-                {item.extra && (
-                    <div className="mt-1 text-xs text-gray-500 line-clamp-2">
-                        {item.extra}
-                    </div>
-                )}
             </div>
 
             {/* Quitar */}

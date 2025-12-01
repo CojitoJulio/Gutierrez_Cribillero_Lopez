@@ -65,12 +65,12 @@ export default function HomePage() {
                     </div>
 
                     {/* Secondary actions */}
-                    <button
+                    {/* <button
                         className="mt-4 w-full rounded-2xl py-4 text-xl font-bold"
                         style={{ backgroundColor: colors.lightTeal, color: colors.darkTeal }}
                     >
                         Ganar Puntos
-                    </button>
+                    </button> */}
 
                     <Link to={'/rewards'}>
                         <button

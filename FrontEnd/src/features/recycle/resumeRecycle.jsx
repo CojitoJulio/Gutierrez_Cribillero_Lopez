@@ -47,12 +47,12 @@ export default function RecycleSummary() {
 
     const { summary, totalScore } = useMemo(() => {
         const materialCount = items.reduce((acc, item) => {
-            const material = item.ia.topClass || "desconocido";
+            const material = item.ia.data_completa[0].clase || "desconocido";
             acc[material] = (acc[material] || 0) + 1;
             return acc;
         }, {});
 
-        const score = items.reduce((acc, item) => acc + (item.ia.score || 0), 0);
+        const score = items.reduce((acc, item) => acc + (item.puntaje || 0), 0);
 
         return { summary: materialCount, totalScore: score };
     }, [items]);
@@ -62,7 +62,7 @@ export default function RecycleSummary() {
         setError("");
         try {
             const itemsWithMaterialId = items.map(it => {
-                const materialInfo = materiales.find(mat => mat.nombre.toLowerCase() === it.ia?.topClass?.toLowerCase());
+                const materialInfo = materiales.find(mat => mat.nombre.toLowerCase() === it.ia?.data_completa[0]?.clase.toLowerCase());
                 return {
                     ...it,
                     materialId: materialInfo ? materialInfo.id_material : null,
